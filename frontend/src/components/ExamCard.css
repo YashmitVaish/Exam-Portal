@@ -1,0 +1,55 @@
+.exam-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.exam-card:hover {
+  border-color: var(--ink3);
+  box-shadow: var(--shadow2);
+}
+.exam-card + .exam-card {
+  margin-top: 0.75rem;
+}
+
+.exam-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.exam-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.exam-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  margin-bottom: 0.35rem;
+}
+
+.exam-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--ink3);
+}
+
+.exam-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.exam-id {
+  font-size: 0.72rem;
+  color: var(--ink3);
+  margin-top: 0.5rem;
+  letter-spacing: 0.02em;
+}

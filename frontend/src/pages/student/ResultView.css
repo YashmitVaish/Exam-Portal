@@ -1,0 +1,44 @@
+.result-wrap {
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
+}
+
+.result-card {
+  width: 100%;
+  max-width: 440px;
+  text-align: center;
+}
+
+.score-display {
+  background: var(--ink);
+  color: var(--white);
+  border-radius: 10px;
+  padding: 2.5rem 2rem;
+  margin-bottom: 1rem;
+}
+
+.score-display.score--good { background: var(--green); }
+.score-display.score--mid  { background: var(--amber); }
+.score-display.score--low  { background: var(--accent); }
+
+.score-num {
+  font-family: var(--font-serif);
+  font-size: 4rem;
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.score-label {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.score-message {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--ink2);
+  margin-bottom: 0.25rem;
+}
