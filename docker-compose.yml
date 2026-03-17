@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  backend:
+    build: .
+    container_name: exam_backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+
+  frontend:
+    build: ./frontend
+    container_name: exam_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
