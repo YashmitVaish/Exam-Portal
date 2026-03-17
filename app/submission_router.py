@@ -12,9 +12,20 @@ router = APIRouter(prefix="/submissions", tags=["submissions"])
 
 def _check_window(exam: Exam):
     now = datetime.now(timezone.utc)
-    if exam.start_at and now < exam.start_at:
-        raise HTTPException(403, f"Exam opens at {exam.start_at.isoformat()}")
-    if exam.end_at and now > exam.end_at:
+
+    def to_aware(dt):
+        if dt is None:
+            return None
+        if dt.tzinfo is None:
+            return dt.replace(tzinfo=timezone.utc)
+        return dt
+
+    start = to_aware(exam.start_at)
+    end   = to_aware(exam.end_at)
+
+    if start and now < start:
+        raise HTTPException(403, f"Exam opens at {start.isoformat()}")
+    if end and now > end:
         raise HTTPException(403, "Exam window has closed")
 
 
@@ -39,10 +50,8 @@ async def join_exam(exam_id: str, student: User = Depends(require_student)):
 
     _check_window(exam)
 
-    existing = await Submission.find_one(
-        Submission.exam_id == exam_id,
-        Submission.student_id == str(student.id)
-    )
+    existing = await Submission.find_one({"exam_id": exam_id, "student_id": str(student.id)})
+
     if existing:
         raise HTTPException(409, "Already joined this exam")
     order = list(range(len(exam.questions)))
@@ -94,8 +103,15 @@ async def submit_exam(
     exam = await Exam.get(sub.exam_id)
 
     _check_window(exam)
-    deadline = (sub.started_at + timedelta(minutes=exam.duration_minutes)
-                if not exam.end_at else exam.end_at)
+    started = sub.started_at
+    if started and started.tzinfo is None:
+        started = started.replace(tzinfo=timezone.utc)
+
+    end_at = exam.end_at
+    if end_at and end_at.tzinfo is None:
+        end_at = end_at.replace(tzinfo=timezone.utc)
+
+    deadline = end_at if end_at else (started + timedelta(minutes=exam.duration_minutes))
     if datetime.now(timezone.utc) > deadline:
         raise HTTPException(403, "Time is up")
 
@@ -115,10 +131,7 @@ async def exam_results(exam_id: str, teacher: User = Depends(require_teacher)):
     if not exam or exam.created_by != str(teacher.id):
         raise HTTPException(404)
 
-    subs = await Submission.find(
-        Submission.exam_id == exam_id,
-        Submission.graded == True
-    ).to_list()
+    subs = await Submission.find({"exam_id": exam_id, "graded": True}).to_list()
 
     return [
         {

@@ -12,10 +12,7 @@ async def question_analytics(exam_id: str, teacher: User = Depends(require_teach
     if not exam or exam.created_by != str(teacher.id):
         raise HTTPException(404)
 
-    submissions = await Submission.find(
-        Submission.exam_id == exam_id,
-        Submission.graded == True
-    ).to_list()
+    submissions = await Submission.find({"exam_id": exam_id, "graded": True}).to_list()
 
     n = len(exam.questions)
     totals  = [0] * n
