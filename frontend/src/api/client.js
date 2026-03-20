@@ -1,4 +1,4 @@
-const BASE = process.env.REACT_APP_API_BASE || 'http://localhost:8000'
+const BASE = '/api'
 class ApiError extends Error {
   constructor(status, detail) {
     super(detail)
