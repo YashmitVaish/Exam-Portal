@@ -7,6 +7,8 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=TokenResponse)
 async def register(data: RegisterRequest):
+    print("PASSWORD:", data.password)
+    print("PASSWORD LENGTH:", len(data.password.encode()))
     if await User.find_one(User.email == data.email):
         raise HTTPException(409, "Email already registered")
 
